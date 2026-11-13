@@ -13,7 +13,7 @@ export default function NoteCreator(props: NoteCreatorProps) {
         type="text"
         placeholder="Title"
         className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        value={title}
+        defaultValue={title}
         onChange={(e) => {
           title = e.target.value;
         }}
@@ -22,20 +22,32 @@ export default function NoteCreator(props: NoteCreatorProps) {
         name="content"
         placeholder="Write your note here..."
         className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        defaultValue={content}
+        rows={4}
         onChange={(e) => {
           content = e.target.value;
         }}
-      >
-        {content}
-      </textarea>
+      />
+
       <button
         className="mt-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => {
           props.onClick(title, content);
         }}
       >
-        Create Note
+        {props.title ? "Update" : "Create"} Note
       </button>
+      {props.title && (
+        <button
+          className="mt-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => {
+            title = "";
+            content = "";
+          }}
+        >
+          Cancel
+        </button>
+      )}
     </div>
   );
 }
