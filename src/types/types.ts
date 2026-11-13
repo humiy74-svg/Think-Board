@@ -5,5 +5,14 @@ interface Note {
   createdAt?: string;
   updatedAt?: string;
 }
-
-export type { Note };
+interface getNotesResponse {
+  response: Note[];
+  status: number;
+  success: boolean;
+}
+interface createNoteResponse {
+  response: Note;
+  status: number;
+  success: boolean;
+}
+export type { Note, getNotesResponse, createNoteResponse };
