@@ -29,25 +29,27 @@ export default function NoteCreator(props: NoteCreatorProps) {
         }}
       />
 
-      <button
-        className="mt-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => {
-          props.onClick(title, content);
-        }}
-      >
-        {props.title ? "Update" : "Create"} Note
-      </button>
-      {props.title && (
+      <div className="flex gap-2">
         <button
-          className="mt-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+          className="mt-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => {
-            title = "";
-            content = "";
+            props.onClick(title, content);
           }}
         >
-          Cancel
+          {props.title ? "Update" : "Create"} Note
         </button>
-      )}
+        {props.title && (
+          <button
+            className="mt-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => {
+              title = "";
+              content = "";
+            }}
+          >
+            Cancel
+          </button>
+        )}
+      </div>
     </div>
   );
 }
