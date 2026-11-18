@@ -1,50 +1,76 @@
+import { useEffect, useState } from "react";
+import { createNote } from "../services/api";
+import type { Note } from "../types/types";
+
 interface NoteCreatorProps {
-  title?: string;
-  content?: string;
-  onClick: (title: string, content: string) => void;
+  note: Partial<Note>;
+  onCreate: () => void;
 }
 
-export default function NoteCreator(props: NoteCreatorProps) {
-  let title = props.title ?? "";
-  let content = props.content ?? "";
+export default function NoteCreator({ note, onCreate }: NoteCreatorProps) {
+  const [title, setTitle] = useState<string>(note.title || "");
+  const [content, setContent] = useState<string>(note.content || "");
+  useEffect(() => {
+    setTitle(note.title || "");
+    setContent(note.content || "");
+  }, [note]);
+  const [loading, setLoading] = useState(false);
+  function handleClick() {
+    const post = async () => {
+      try {
+        setLoading(true);
+        await createNote({ title, content, id: note.id || "" });
+        setTitle("");
+        setContent("");
+        onCreate();
+      } catch (err) {
+        console.log("Failed to create note");
+      } finally {
+        setLoading(false);
+      }
+    };
+    post();
+  }
   return (
     <div className="p-4 flex flex-col gap-2">
       <input
         type="text"
         placeholder="Title"
         className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        defaultValue={title}
+        value={title}
         onChange={(e) => {
-          title = e.target.value;
+          setTitle(e.target.value);
         }}
       />
       <textarea
         name="content"
         placeholder="Write your note here..."
         className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        defaultValue={content}
+        value={content}
         rows={4}
         onChange={(e) => {
-          content = e.target.value;
+          setContent(e.target.value);
         }}
       />
 
       <div className="flex gap-2">
         <button
-          className="mt-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => {
-            props.onClick(title, content);
-          }}
+          className="mt-2 bg-green-500 hover:bg-green-700 disabled:bg-green-300 text-white font-bold py-2 px-4 rounded"
+          onClick={handleClick}
+          disabled={
+            loading ||
+            title.length < 5 ||
+            content.length < 10 ||
+            (title === note.title && content === note.content)
+          }
         >
-          {props.title ? "Update" : "Create"} Note
+          {note.title ? "Update" : "Create"} Note
         </button>
-        {props.title && (
+        {note.title && (
           <button
-            className="mt-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
-              title = "";
-              content = "";
-            }}
+            className="mt-2 bg-gray-500 hover:bg-gray-700 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded"
+            onClick={onCreate}
+            disabled={loading}
           >
             Cancel
           </button>
