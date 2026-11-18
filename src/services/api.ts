@@ -23,6 +23,5 @@ export const createNote = async (note: Note): Promise<createNoteResponse> => {
 };
 export const deleteNote = async (id: string): Promise<getNotesResponse> => {
   const response = await API.delete<getNotesResponse>(`/notes/${id}`);
-  console.log("delete response", response.data);
   return response.data;
 };
