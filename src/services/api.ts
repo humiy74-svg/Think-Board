@@ -21,3 +21,8 @@ export const createNote = async (note: Note): Promise<createNoteResponse> => {
   else response = await API.post<createNoteResponse>("/notes", data);
   return response.data;
 };
+export const deleteNote = async (id: string): Promise<getNotesResponse> => {
+  const response = await API.delete<getNotesResponse>(`/notes/${id}`);
+  console.log("delete response", response.data);
+  return response.data;
+};
