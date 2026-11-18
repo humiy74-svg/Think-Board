@@ -15,4 +15,8 @@ interface createNoteResponse {
   status: number;
   success: boolean;
 }
-export type { Note, getNotesResponse, createNoteResponse };
+interface toastMessage {
+  message: string;
+  messageType: "success" | "error";
+}
+export type { Note, getNotesResponse, createNoteResponse, toastMessage };

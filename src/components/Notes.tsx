@@ -5,6 +5,10 @@ interface NotesProps {
   notes: Note[];
   onEdit: (note: Note) => void;
   onDelete: (id: string) => void;
+  onToast: (toast: {
+    message: string;
+    messageType: "success" | "error";
+  }) => void;
 }
 export default function Notes(props: NotesProps) {
   const handleDelete = (id: string, setLoading: (loading: boolean) => void) => {
@@ -13,7 +17,15 @@ export default function Notes(props: NotesProps) {
         setLoading(true);
         await deleteNote(id);
         props.onDelete(id);
+        props.onToast({
+          message: "Note deleted successfully",
+          messageType: "success",
+        });
       } catch (error) {
+        props.onToast({
+          message: "Failed to delete note",
+          messageType: "error",
+        });
         console.error(error);
       } finally {
         setLoading(false);

@@ -3,11 +3,16 @@ import NoteCreator from "./components/NoteCreator";
 import Notes from "./components/Notes";
 import SearchBar from "./components/SearchBar";
 import useNotes from "./hooks/useNotes";
-import type { Note } from "./types/types";
+import type { Note, toastMessage } from "./types/types";
+import Toast from "./components/Toast";
 
 function App() {
   const [currentNote, setcurrentNote] = useState<Note | {}>({});
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [toastMessage, setToastMessage] = useState<toastMessage>({
+    message: "",
+    messageType: "success",
+  });
   const { notes, loading, error } = useNotes(currentNote);
   const handleEdit = (note: Note) => {
     setcurrentNote(note);
@@ -25,6 +30,15 @@ function App() {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
+  const handleToast = (toast: toastMessage) => {
+    setToastMessage(toast);
+    setTimeout(() => {
+      setToastMessage({
+        message: "",
+        messageType: "success",
+      });
+    }, 3000);
+  };
   const filteredNotes = notes.filter(
     (note) =>
       note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -33,7 +47,11 @@ function App() {
   return (
     <>
       <SearchBar onSearch={handleSearch} />
-      <NoteCreator note={currentNote} onCreate={handleCreate} />
+      <NoteCreator
+        note={currentNote}
+        onCreate={handleCreate}
+        onToast={handleToast}
+      />
       {loading && !notes.length ? (
         <div>Loading...</div>
       ) : error ? (
@@ -43,6 +61,13 @@ function App() {
           notes={filteredNotes}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onToast={handleToast}
+        />
+      )}
+      {toastMessage.message && (
+        <Toast
+          message={toastMessage.message}
+          messageType={toastMessage.messageType}
         />
       )}
     </>

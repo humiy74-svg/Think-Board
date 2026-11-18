@@ -5,9 +5,17 @@ import type { Note } from "../types/types";
 interface NoteCreatorProps {
   note: Partial<Note>;
   onCreate: () => void;
+  onToast: (toast: {
+    message: string;
+    messageType: "success" | "error";
+  }) => void;
 }
 
-export default function NoteCreator({ note, onCreate }: NoteCreatorProps) {
+export default function NoteCreator({
+  note,
+  onCreate,
+  onToast,
+}: NoteCreatorProps) {
   const [title, setTitle] = useState<string>(note.title || "");
   const [content, setContent] = useState<string>(note.content || "");
   useEffect(() => {
@@ -23,8 +31,17 @@ export default function NoteCreator({ note, onCreate }: NoteCreatorProps) {
         setTitle("");
         setContent("");
         onCreate();
+        onToast({
+          message: note.id
+            ? "Note updated successfully"
+            : "Note created successfully",
+          messageType: "success",
+        });
       } catch (err) {
-        console.log("Failed to create note");
+        onToast({
+          message: "Failed to create note",
+          messageType: "error",
+        });
       } finally {
         setLoading(false);
       }
@@ -59,7 +76,7 @@ export default function NoteCreator({ note, onCreate }: NoteCreatorProps) {
           onClick={handleClick}
           disabled={
             loading ||
-            title.length < 5 ||
+            title.length < 4 ||
             content.length < 10 ||
             (title === note.title && content === note.content)
           }
