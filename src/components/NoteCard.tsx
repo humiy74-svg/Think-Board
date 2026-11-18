@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Note } from "../types/types";
 import ModalNote from "./ModalNote";
+import DeleteModal from "./DeleteModal";
 
 interface NoteCardProps {
   note: Note;
@@ -11,8 +12,12 @@ interface NoteCardProps {
 export default function NoteCard(props: NoteCardProps) {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [deleteConfirmation, setdeleteConfirmation] = useState(false);
   const handleShowModal = () => {
     setShowModal(!showModal);
+  };
+  const handleConfirmation = () => {
+    setdeleteConfirmation(!deleteConfirmation);
   };
   return (
     <>
@@ -38,8 +43,8 @@ export default function NoteCard(props: NoteCardProps) {
         </button>
         <button
           onClick={(e) => {
+            setdeleteConfirmation(true);
             e.stopPropagation();
-            props.onDelete(props.note.id, setLoading);
           }}
           className="mt-2 ml-2 bg-red-500 hover:bg-red-700 disabled:bg-red-400 text-white font-bold py-2 px-4 rounded"
           disabled={loading}
@@ -52,6 +57,12 @@ export default function NoteCard(props: NoteCardProps) {
           title={props.note.title}
           content={props.note.content}
           show={handleShowModal}
+        />
+      )}
+      {deleteConfirmation && (
+        <DeleteModal
+          show={handleConfirmation}
+          onDelete={() => props.onDelete(props.note.id, setLoading)}
         />
       )}
     </>
